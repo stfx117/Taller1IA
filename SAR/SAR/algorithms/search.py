@@ -36,16 +36,26 @@ def breadthFirstSearch(problem: SearchProblem):
     """
     Search the shallowest nodes in the search tree first.
     """
-    estado_inicial = problem.getStartState()
-    cola = utils.Queue()
     visitados = set()
-    cola.push(estado_inicial)
+    cola = utils.Queue()
+    estado_inicial = problem.getStartState()
+    
+    cola.push((estado_inicial, []))
+    visitados.add(estado_inicial)
     
     while not cola.isEmpty():
-        estado = cola.pop()
+        estado, camino = cola.pop()
+
         if problem.isGoalState(estado):
-            visitados.add(estado)
-        sucesores = problem.getSuccessors(estado)
+            return camino
+        
+        for (sucesor, accion, costo) in problem.getSuccessors(estado):
+            if not sucesor in visitados:
+                visitados.add(sucesor)
+                nuevo_camino = camino + [accion]
+                cola.push((sucesor, nuevo_camino))
+    
+    return []  
 
 def uniformCostSearch(problem: SearchProblem):
     """
